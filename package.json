@@ -1,0 +1,40 @@
+{
+  "name": "gulp-posthtml",
+  "version": "1.0.0",
+  "description": "PostHTML Gulp Plugin",
+  "main": "index.js",
+  "dependencies": {
+    "gulp-util": "^3.0.6",
+    "posthtml": "^0.2.0",
+    "through2": "^2.0.0"
+  },
+  "devDependencies": {
+    "jscs": "^1.13.1",
+    "jshint": "^2.8.0"
+  },
+  "scripts": {
+    "lint": "jshint . && jscs . -v"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/posthtml/gulp-posthtml.git"
+  },
+  "keywords": [
+    "html",
+    "xml",
+    "postproccessor",
+    "parser",
+    "transform",
+    "manipulation",
+    "plugin",
+    "gulp",
+    "gulp-posthtml",
+    "gulp-plugin"
+  ],
+  "author": "Ivan Voischev <voischev.ivan@ya.ru>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/posthtml/gulp-posthtml/issues"
+  },
+  "homepage": "https://github.com/posthtml/gulp-posthtml#readme"
+}
