@@ -15,8 +15,8 @@ var gulp = require('gulp');
 
 gulp.task('posthtml', function () {
     var plugins = [
-        require('posthtml-doctype')('<!DOCTYPE html>')
-        require('posthtml-custom-elements')(),
+        require('posthtml-doctype')('<!DOCTYPE html>'),
+        require('posthtml-custom-elements')()
     ];
 
     var options = { closingSingleTag: 'slash' };
