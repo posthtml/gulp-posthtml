@@ -22,6 +22,8 @@ module.exports = function(plugins, options) {
             .then(function(result) {
                 chunk.contents = new Buffer(result.html);
                 cb(null, chunk);
+            }).catch(function(err) {
+                cb(new PluginError(PLUGIN_NAME, err));
             });
    });
 };
