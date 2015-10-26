@@ -13,7 +13,9 @@
     "jshint": "^2.8.0"
   },
   "scripts": {
-    "lint": "jshint . && jscs . -v"
+    "lint": "jshint . && jscs . -v",
+    "preversion": "npm run lint",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
