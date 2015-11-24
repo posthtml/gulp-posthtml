@@ -1,6 +1,6 @@
 {
   "name": "gulp-posthtml",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "PostHTML Gulp Plugin",
   "main": "index.js",
   "dependencies": {
