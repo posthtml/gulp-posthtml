@@ -1,10 +1,17 @@
 var posthtml = require('posthtml');
 var through = require('through2');
 var gutil = require('gulp-util');
+var objectAssign = require('object-assign');
 var PluginError = gutil.PluginError;
 
 // Consts
 var PLUGIN_NAME = 'gulp-posthtml';
+
+function getMetaInfoFromChunk(chunk) {
+  return {
+    path: chunk.path
+  }
+}
 
 module.exports = function(plugins, options) {
 
@@ -18,7 +25,8 @@ module.exports = function(plugins, options) {
           return cb(null, chunk);
         }
         posthtml([].concat(plugins))
-            .process(String(chunk.contents), options)
+            .process(String(chunk.contents),
+                objectAssign({}, options, getMetaInfoFromChunk(chunk)))
             .then(function(result) {
                 chunk.contents = new Buffer(result.html);
                 cb(null, chunk);
