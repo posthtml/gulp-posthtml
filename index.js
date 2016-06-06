@@ -1,9 +1,10 @@
-var posthtml = require('posthtml');
-var through = require('through2');
-var gutil = require('gulp-util');
-var PluginError = gutil.PluginError;
+'use strict';
 
-// Consts
+var PostHTML = require('posthtml');
+var PluginError = require('gulp-util').PluginError;
+var through = require('through2');
+
+// constants
 var PLUGIN_NAME = 'gulp-posthtml';
 
 module.exports = function(plugins, options) {
@@ -12,18 +13,21 @@ module.exports = function(plugins, options) {
         throw new PluginError(PLUGIN_NAME, 'No plugin?');
     }
 
+    var posthtml = PostHTML([].concat(plugins));
+
     return through.obj(function(chunk, enc, cb) {
         if (chunk.isNull()) {
-          // return empty file
-          return cb(null, chunk);
+            // return empty file
+            return cb(null, chunk);
         }
-        posthtml([].concat(plugins))
-            .process(String(chunk.contents), options)
+
+        posthtml
+            .process(chunk.contents.toString(enc), options)
             .then(function(result) {
                 chunk.contents = new Buffer(result.html);
                 cb(null, chunk);
-            }).catch(function(err) {
+            }, function(err) {
                 cb(new PluginError(PLUGIN_NAME, err));
             });
-   });
+    });
 };

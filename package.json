@@ -17,10 +17,7 @@
     "preversion": "npm run lint",
     "postversion": "git push && git push --tags"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/posthtml/gulp-posthtml.git"
-  },
+  "repository": "posthtml/gulp-posthtml",
   "keywords": [
     "html",
     "xml",

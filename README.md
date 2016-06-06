@@ -5,13 +5,13 @@
 ```
 npm install --save-dev gulp-posthtml
 ```
-Install required PostHTML [plugins](https://www.npmjs.com/search?q=posthtml) separately.
+PostHTML [plugins](https://www.npmjs.com/search?q=posthtml) should be installed separately.
 
 ## Usage
 
 ```js
-var posthtml = require('gulp-posthtml');
 var gulp = require('gulp');
+var posthtml = require('gulp-posthtml');
 
 gulp.task('posthtml', function () {
     var plugins = [
@@ -20,7 +20,6 @@ gulp.task('posthtml', function () {
     ];
 
     var options = { closingSingleTag: 'slash' };
-
 
     return gulp.src('./html/*.html')
         .pipe(posthtml(plugins, options))
