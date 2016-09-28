@@ -1,7 +1,21 @@
-node_modules/
-test/
-npm-debug.log
+# FILES
+
+.travis.yml
+.gitignore
 .editorconfig
-.jscsrc
-.jshintignore
-.jshintrc
+.mversionrc
+
+CHANGELOG.md
+CONTRIBUTING.md
+README.md
+
+npm-debug.log
+
+# DIRECTORIES
+
+.github
+.nyc_output
+
+test
+coverage
+node_modules
