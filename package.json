@@ -1,39 +1,69 @@
 {
   "name": "gulp-posthtml",
   "version": "1.5.2",
-  "description": "PostHTML Gulp Plugin",
+  "description": "Gulp PostHTML Plugin",
   "main": "index.js",
+  "engines": {
+    "npm": ">=3",
+    "node": ">=4"
+  },
+  "scripts": {
+    "clean": "rm -rf .nyc_output coverage jsdoc-api",
+    "lint": "standard",
+    "pretest": "npm run clean && npm run lint",
+    "test": "nyc ava 'test/index.js'",
+    "docs": "jsdoc2md index.js > index.md",
+    "release:major": "mversion major",
+    "release:minor": "mversion minor",
+    "release:patch": "mversion patch"
+  },
   "dependencies": {
     "gulp-util": "^3.0.6",
     "posthtml": "^0.9.0",
+    "posthtml-load-config": "^1.0.0-alpha3",
     "through2": "^2.0.0"
   },
   "devDependencies": {
-    "jscs": "^1.13.1",
-    "jshint": "^2.8.0"
+    "ava": "^0.16.0",
+    "nyc": "^8.3.0",
+    "posthtml-include": "^1.1.0",
+    "posthtml-pug": "^1.0.1",
+    "standard": "^8.2.0",
+    "vinyl": "^1.2.0"
   },
-  "scripts": {
-    "lint": "jshint . && jscs . -v",
-    "preversion": "npm run lint",
-    "postversion": "git push && git push --tags"
+  "ava": {
+    "verbose": "true"
   },
-  "repository": "posthtml/gulp-posthtml",
+  "nyc": {
+    "all": true,
+    "include": [
+      "index.js",
+      "test"
+    ],
+    "extension": [
+      ".js"
+    ]
+  },
   "keywords": [
-    "html",
     "xml",
-    "postproccessor",
-    "parser",
-    "transform",
-    "manipulation",
-    "plugin",
+    "html",
+    "posthtml",
+    "posthtmlplugin",
     "gulp",
-    "gulp-posthtml",
-    "gulp-plugin"
+    "gulpplugin",
+    "gulp-posthtml"
   ],
-  "author": "Ivan Voischev <voischev.ivan@ya.ru>",
-  "license": "MIT",
+  "author": {
+    "name": "Ivan Voishev",
+    "email": "voischev.ivan@ya.ru"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/posthtml/gulp-posthtml.git"
+  },
   "bugs": {
     "url": "https://github.com/posthtml/gulp-posthtml/issues"
   },
-  "homepage": "https://github.com/posthtml/gulp-posthtml#readme"
+  "homepage": "https://github.com/posthtml/gulp-posthtml#readme",
+  "license": "MIT"
 }
