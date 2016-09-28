@@ -5,7 +5,7 @@
 [![Standard Code Style][style]][style-url]
 [![Chat][chat]][chat-badge]
 
-# Gulp PostHTML Plugin <img align="right" width="200" height="220" title="PostHTML" src="http://posthtml.github.io/posthtml/logo.svg">
+# Gulp PostHTML <img align="right" width="200" height="220" title="PostHTML" src="http://posthtml.github.io/posthtml/logo.svg">
 
 ## Install
 
@@ -13,17 +13,18 @@
 npm i -D gulp-posthtml
 ```
 
-PostHTML [plugins](https://www.npmjs.com/search?q=posthtml) should be installed separately.
-
 ## Usage
+
+### Static
 
 ```js
 import { task, src, dest } from 'gulp'
+
 import posthtml from 'gulp-posthtml'
 
 task('html', () => {
     const plugins = [
-      require('posthtml-include')(root: './components'),
+      require('posthtml-include')({ root: './components' }),
       require('posthtml-custom-elements')()
     ]
     const options = { parser: require('sugarml') }
@@ -31,6 +32,31 @@ task('html', () => {
     return src('src/*.html')
       .pipe(posthtml(plugins, options))
       .pipe(gulp.dest('dest'))
+})
+```
+
+### Dynamic
+
+```js
+
+import { task, src, dest } from 'gulp'
+
+import tap from 'gulp-tap'
+import posthtml from 'gulp-posthtml'
+
+task('html', () => {
+  let path
+
+  const plugins = [
+    require('posthtml-include')({ root: `${path}/components` }),
+    require('posthtml-custom-elements')()
+  ]
+  const options = { parser: require('sugarml') }
+
+  return src('src/*.html')
+    .pipe(tap((file) => path = file.path))
+    .pipe(posthtml(plugins, options))
+    .pipe(gulp.dest('dest'))
 })
 ```
 
@@ -51,7 +77,7 @@ task('html', () => {
 
 ## Contributing
 
-See [PostHTML Guidelines](https://github.com/posthtml/posthtml/tree/master/docs) and [contribution guide](CONTRIBUTING.md).
+See [PostHTML Guidelines](https://github.com/posthtml/posthtml/tree/master/docs) and [CONTRIBUTING](CONTRIBUTING.md).
 
 ## LICENSE
 
