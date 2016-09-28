@@ -1,33 +1,58 @@
-'use strict';
+'use strict'
 
-var PostHTML = require('posthtml');
-var PluginError = require('gulp-util').PluginError;
-var through = require('through2');
+var Error = require('gulp-util').PluginError
+var transform = require('through2').obj
 
-// constants
-var PLUGIN_NAME = 'gulp-posthtml';
+var posthtml = require('posthtml')
+var posthtmlrc = require('posthtml-load-config')
 
-module.exports = function(plugins, options) {
+var PLUGIN_NAME = 'gulp-posthtml'
 
-    if (!plugins) {
-        throw new PluginError(PLUGIN_NAME, 'No plugin?');
+/**
+ * @author Ivan Voishev (@voishev) voischev.ivan@ya.ru
+ *
+ * @module gulp-posthtml
+ * @version 1.6.0
+ * @desc Gulp PostHTML Plugin
+ *
+ * @requires gulp-util
+ * @requires through2
+ * @requires posthtml
+ * @requires posthtml-load-config
+ *
+ * @param  {Array}  plugins PostHTML Plugins
+ * @param  {Object} options PostHTML Options
+ *
+ * @return {Function}       Stream (Transform)
+ */
+module.exports = function (plugins, options) {
+  return transform(function (file, enc, cb) {
+    if (file.isNull()) {
+      return cb(null, file)
     }
 
-    var posthtml = PostHTML([].concat(plugins));
+    if (!plugins || !Array.isArray(plugins)) {
+      posthtmlrc().then(function (config) {
+        posthtml(config.plugins)
+          .process(file.contents.toString(enc), config.options)
+          .then(function (result) {
+            file.contents = new Buffer(result.html)
+            cb(null, file)
+          }, function (err) {
+            cb(new Error(PLUGIN_NAME, err))
+          })
+      })
+    }
 
-    return through.obj(function(chunk, enc, cb) {
-        if (chunk.isNull()) {
-            // return empty file
-            return cb(null, chunk);
-        }
-
-        posthtml
-            .process(chunk.contents.toString(enc), options)
-            .then(function(result) {
-                chunk.contents = new Buffer(result.html);
-                cb(null, chunk);
-            }, function(err) {
-                cb(new PluginError(PLUGIN_NAME, err));
-            });
-    });
-};
+    if (plugins && Array.isArray(plugins)) {
+      posthtml(plugins)
+        .process(file.contents.toString(enc), options)
+        .then(function (result) {
+          file.contents = new Buffer(result.html)
+          cb(null, file)
+        }, function (err) {
+          cb(new Error(PLUGIN_NAME, err))
+        })
+    }
+  })
+}
