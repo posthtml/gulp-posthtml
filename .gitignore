@@ -5,11 +5,10 @@
 
 # NODEJS
 
-.nyc_output
-
 npm-debug.log
 
 dmd
+jest
 coverage
 jsdoc-api
 node_modules

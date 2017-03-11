@@ -3,19 +3,18 @@
 .travis.yml
 .gitignore
 .editorconfig
-.mversionrc
 
-CHANGELOG.md
 CONTRIBUTING.md
-README.md
 
 npm-debug.log
 
 # DIRECTORIES
 
 .github
-.nyc_output
 
+dmd
 test
+jest
 coverage
+jsdoc-api
 node_modules
