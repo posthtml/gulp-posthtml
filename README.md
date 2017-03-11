@@ -12,7 +12,6 @@
     <img width="220" height="200" title="PosHTML"           src="http://posthtml.github.io/posthtml/logo.svg">
   </a>
   <h1>Gulp PostHTML</h1>
-  <p>PostHTML Plugin for Gulp<p>
 </div>
 
 <h2 align="center">Install</h2>
@@ -39,11 +38,15 @@ task('html', () => {
 
 ### Plugins
 
-**`plugins`**: **`{Array}`** PostHTML Plugins
+|Name|Type|Default|Description|
+|:--:|:--:|:-----:|:----------|
+|`plugins`|`{Array}`|`[]`|PostHTML Plugins|
 
 ### Options
 
-**`options`**: **`{Object}`** PostHTML Options
+|Name|Type|Default|Description|
+|:--:|:--:|:-----:|:----------|
+|`options`|`{Object}`|`{}`|PostHTML Options|
 
 :warning: `posthtml.config.js` will not be loaded, when `plugins` and/or `options` are specified.
 
@@ -70,21 +73,52 @@ task('html', () => {
 
 ### Config
 
+|Name|Type|Default|Description|
+|:--:|:--:|:-----:|:----------|
+|`plugins`|`{Array}`|`[]`|PostHTML Plugins|
+|`options`|`{Object}`|`{}`|PostHTML Options|
+
+**gulpfile.js**
+```js
+import { task, src, dest } from 'gulp'
+
+import rename from 'gulp-rename'
+import posthtml from 'gulp-posthtml'
+
+
+task('sml', () => {
+  const config = (file) => {
+    plugins: [ require('posthtml-include')({ root: file.dirname }) ]
+    options: { parser: require('posthtml-sugarml')() }
+  }
+
+  return src('src/*.sml')
+    .pipe(posthtml(config))
+    .pipe(rename({ ext: '.html' }))
+    .pipe(dest('dest'))
+})
+```
+
+### `posthtml.config.js`
+
 ##### Context
 
-**`ctx`**: **{Object}** PostHTML Config
+|Name|Type|Default|Description|
+|:--:|:--:|:-----:|:----------|
+|`env`|`{String}`|`'development'`|process.env.NODE_ENV|
+|`file`|`{Object}`|`dirname, basename, extname`|File|
+|`options`|`{Object}`|`{}`|Options (Parser, Render, Plugin Options)|
 
 **posthtml.config.js**
 ```js
-module.exports = (ctx) => {
-  return {
-    parser: ctx.ext == '.sml' ? 'posthtml-sugarml' : false,
-    plugins: {
-      'posthtml-include': ctx.include,
-      'htmlnano': ctx.env === 'production' ? null : false
-    }
+module.exports = ({ file, options, env }) => ({
+  parser: 'posthtml-sugarml'
+  plugins: {
+    'posthtml-include': { root: file.dirname },
+    'posthtm-expressions': { locals: options.locals }
+    'htmlnano': env === 'production' ? {} : false
   }
-}
+})
 ```
 
 **gulpfile.js**
@@ -97,21 +131,11 @@ import posthtml from 'gulp-posthtml'
 
 
 task('sml', () => {
-  const ctx = { ext: '.sml', include: {} }
+  const ctx = { locals: { a: 'Hello World!'} }
 
   return src('src/*.sml')
-    .pipe(tap((file) => ctx.include.root = file.path))
     .pipe(posthtml(ctx))
     .pipe(rename({ ext: '.html' }))
-    .pipe(dest('dest'))
-})
-
-task('html', () => {
-  const ctx = { include: {} }
-
-  return src('src/*.html')
-    .pipe(tap((file) => ctx.include.root = file.path))
-    .pipe(posthtml(ctx))
     .pipe(dest('dest'))
 })
 ```
@@ -158,11 +182,11 @@ task('html', () => {
 [tests]: http://img.shields.io/travis/posthtml/gulp-posthtml.svg
 [tests-url]: https://travis-ci.org/posthtml/gulp-posthtml
 
-[cover]: https://coveralls.io/repos/github/posthtml/gulp-posthtml/badge.svg?branch=master
-[cover-url]: https://coveralls.io/github/posthtml/gulp-posthtml?branch=master
+[cover]: https://coveralls.io/repos/github/posthtml/gulp-posthtml/badge.svg
+[cover-url]: https://coveralls.io/github/posthtml/gulp-posthtml
 
 [style]: https://img.shields.io/badge/code%20style-standard-yellow.svg
 [style-url]: http://standardjs.com/
 
 [chat]: https://badges.gitter.im/posthtml/posthtml.svg
-[chat-url]: https://gitter.im/posthtml/posthtml?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"
+[chat-url]: https://gitter.im/posthtml/posthtml
