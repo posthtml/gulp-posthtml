@@ -48,8 +48,6 @@ task('html', () => {
 |:--:|:--:|:-----:|:----------|
 |`options`|`{Object}`|`{}`|PostHTML Options|
 
-:warning: `posthtml.config.js` will not be loaded, when `plugins` and/or `options` are specified.
-
 **gulpfile.js**
 ```js
 import { task, src, dest } from 'gulp'
@@ -60,6 +58,7 @@ import posthtml from 'gulp-posthtml'
 
 task('html', () => {
   let path
+
   const plugins = [ require('posthtml-include')({ root: path }) ]
   const options = { parser: require('posthtml-sugarml')() }
 
@@ -99,9 +98,9 @@ task('sml', () => {
 })
 ```
 
-### `posthtml.config.js`
+### [`posthtml.config.js`](https://github.com/posthtml/posthtml-load-config)
 
-##### Context
+#### Context
 
 |Name|Type|Default|Description|
 |:--:|:--:|:-----:|:----------|
@@ -125,7 +124,6 @@ module.exports = ({ file, options, env }) => ({
 ```js
 import { task, src, dest } from 'gulp'
 
-import tap from 'gulp-tap'
 import rename from 'gulp-rename'
 import posthtml from 'gulp-posthtml'
 
