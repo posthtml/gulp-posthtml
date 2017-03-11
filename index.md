@@ -1,12 +1,13 @@
-<a name="module_gulp-posthtml"></a>
+<a name="gulp-posthtml"></a>
 
-## gulp-posthtml ⇒ <code>function</code>
+## gulp-posthtml(plugins, options) ⇒ <code>function</code>
 PostHTML Plugin for Gulp
 
+**Kind**: global function  
 **Returns**: <code>function</code> - Stream (Transform)  
 **Requires**: <code>module:gulp-util</code>, <code>module:through2</code>, <code>module:posthtml</code>, <code>module:posthtml-load-config</code>  
-**Version**: 2.0.0  
-**Author:** Ivan Voishev (@voishev) <voischev.ivan@ya.ru>  
+**Version**: 3.0.0  
+**Author**: Ivan Voishev (@voishev) <voischev.ivan@ya.ru>  
 **License**: MIT  
 
 | Param | Type | Description |
