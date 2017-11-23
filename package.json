@@ -1,6 +1,6 @@
 {
   "name": "gulp-posthtml",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Gulp PostHTML Plugin",
   "main": "index.js",
   "engines": {
@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "gulp-util": "^3.0.6",
-    "posthtml": "^0.9.2",
+    "posthtml": "^0.10.0",
     "posthtml-load-config": "^1.0.0",
     "through2": "^2.0.0"
   },
