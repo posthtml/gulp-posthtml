@@ -86,10 +86,10 @@ import posthtml from 'gulp-posthtml'
 
 
 task('sml', () => {
-  const config = (file) => {
-    plugins: [ require('posthtml-include')({ root: file.dirname }) ]
+  const config = (file) => ({
+    plugins: [ require('posthtml-include')({ root: file.dirname }) ],
     options: { parser: require('posthtml-sugarml')() }
-  }
+  })
 
   return src('src/*.sml')
     .pipe(posthtml(config))
