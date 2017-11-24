@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "gulp-util": "^3.0.6",
-    "posthtml": "^0.10.0",
+    "posthtml": "^0.10.1",
     "posthtml-load-config": "^1.0.0",
     "through2": "^2.0.0"
   },
