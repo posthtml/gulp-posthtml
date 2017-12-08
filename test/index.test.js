@@ -2,9 +2,9 @@
 // #GULP - POSTHTML - TEST - INDEX
 // ------------------------------------
 
+const test = require('ava');
 const fs = require('fs')
 const path = require('path')
-
 const File = require('vinyl')
 
 const fixture = (file) => {
@@ -22,7 +22,8 @@ const expected = (file) => {
 
 const posthtml = require('..')
 
-test.skip('File', (t) => {
+test.cb('File', t => {
+  t.plan(2)
   const html = fixture('index.html')
 
   const plugin = posthtml([])
@@ -30,11 +31,14 @@ test.skip('File', (t) => {
   plugin.write(html)
 
   plugin.on('data', (html) => {
-    expect(html.contents.toString('utf8')).toEqual(expected('index.html'))
+    t.true(html.isBuffer());
+    t.is(html.contents.toString('utf8'), expected('index.html'))
+    t.end()
   })
 })
 
-test('Plugins', () => {
+test.cb('Plugins', t => {
+  t.plan(2)
   const html = fixture('index.html')
 
   const plugins = [
@@ -46,26 +50,14 @@ test('Plugins', () => {
   plugin.write(html)
 
   plugin.on('data', (html) => {
-    expect(html.contents.toString('utf8')).toEqual(expected('result.html'))
+    t.true(html.isBuffer());
+    t.is(html.contents.toString('utf8'), expected('html-result.html'))
+    t.end()
   })
 })
 
-test('Options', () => {
-  const html = fixture('index.sml')
-
-  const plugins = []
-  const options = { parser: require('posthtml-sugarml')() }
-
-  const plugin = posthtml(plugins, options)
-
-  plugin.write(html)
-
-  plugin.on('data', (html) => {
-    expect(html.contents.toString('utf8')).toEqual(expected('index.html'))
-  })
-})
-
-test('Function', () => {
+test.cb('Options', t => {
+  t.plan(2);
   const html = fixture('index.sml')
 
   const cb = (file) => ({
@@ -80,11 +72,36 @@ test('Function', () => {
   plugin.write(html)
 
   plugin.on('data', (html) => {
-    expect(html.contents.toString('utf8')).toEqual(expected('result.html'))
+    t.true(html.isBuffer());
+    t.is(html.contents.toString('utf8'), expected('sugar-result.html'))
+    t.end()
   })
 })
 
-test('Config', () => {
+test.cb('Function', t => {
+  t.plan(2);
+  const html = fixture('index.sml')
+
+  const cb = (file) => ({
+    plugins: [
+      require('posthtml-include')({ root: `${file.dirname}/components` })
+    ],
+    options: { parser: require('posthtml-sugarml')() }
+  })
+
+  const plugin = posthtml(cb)
+
+  plugin.write(html)
+
+  plugin.on('data', (html) => {
+    t.true(html.isBuffer());
+    t.is(html.contents.toString('utf8'), expected('sugar-result.html'))
+    t.end()
+  })
+})
+
+test.cb('Config', t => {
+  t.plan(2)
   const html = fixture('index.sml')
 
   const ctx = { include: { root: './test/fixtures/components' } }
@@ -94,6 +111,8 @@ test('Config', () => {
   plugin.write(html)
 
   plugin.on('data', (html) => {
-    expect(html.contents.toString('utf8')).toEqual(expected('result.html'))
+    t.true(html.isBuffer());
+    t.is(html.contents.toString('utf8'), expected('sugar-result.html'))
+    t.end()
   })
 })

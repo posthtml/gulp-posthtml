@@ -1,6 +1,6 @@
 {
   "name": "gulp-posthtml",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Gulp PostHTML Plugin",
   "main": "index.js",
   "engines": {
@@ -8,10 +8,9 @@
   },
   "scripts": {
     "lint": "standard",
-    "test": "jest --verbose --coverage",
+    "test": "nyc ava",
     "docs": "jsdoc2md index.js > INDEX.md",
-    "clean": "rm -rf jest coverage jsdoc-api dmd",
-    "start": "npm run clean && npm run lint && npm test",
+    "start": "npm run lint && npm test",
     "release": "standard-version"
   },
   "dependencies": {
@@ -21,19 +20,15 @@
     "through2": "^2.0.0"
   },
   "devDependencies": {
+    "ava": "^0.24.0",
     "coveralls": "^2.11.16",
-    "jest": "^19.0.2",
     "jsdoc-to-markdown": "^3.0.0",
+    "nyc": "^11.3.0",
     "posthtml-include": "^1.1.0",
     "posthtml-sugarml": "^1.0.0-alpha3",
     "standard": "^9.0.1",
     "standard-version": "^4.0.0",
     "vinyl": "^2.0.1"
-  },
-  "standard": {
-    "env": {
-      "jest": true
-    }
   },
   "keywords": [
     "html",
