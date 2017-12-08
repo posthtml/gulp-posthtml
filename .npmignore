@@ -18,3 +18,4 @@ jest
 coverage
 jsdoc-api
 node_modules
+.nyc_output
