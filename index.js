@@ -78,7 +78,6 @@ module.exports = rc((loadConfig) => {
       return posthtml(config.plugins)
         .process(file.contents.toString(enc), config.options)
         .then((result) => {
-          // console.log(result.html)
           file.contents = new Buffer(result.html)
           cb(null, file)
         })
