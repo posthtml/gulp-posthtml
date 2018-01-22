@@ -9,26 +9,25 @@
   "scripts": {
     "lint": "standard",
     "test": "nyc ava",
-    "docs": "jsdoc2md index.js > INDEX.md",
+    "docs": "jsdoc2md index.js > PLUGIN.md",
     "start": "npm run lint && npm test",
     "release": "standard-version"
   },
   "dependencies": {
     "plugin-error": "^1.0.0",
-    "posthtml": "^0.10.1",
+    "posthtml": "^0.11.0",
     "posthtml-load-config": "^1.0.0",
     "through2": "^2.0.0"
   },
   "devDependencies": {
     "ava": "^0.24.0",
-    "coveralls": "^2.11.16",
-    "jsdoc-to-markdown": "^3.0.0",
-    "nyc": "^11.3.0",
+    "jsdoc-to-markdown": "^4.0.0",
+    "nyc": "^11.0.0",
     "posthtml-include": "^1.1.0",
     "posthtml-sugarml": "^1.0.0-alpha3",
-    "standard": "^9.0.1",
+    "standard": "^10.0.0",
     "standard-version": "^4.0.0",
-    "vinyl": "^2.0.1"
+    "vinyl": "^2.0.0"
   },
   "keywords": [
     "html",
@@ -48,13 +47,8 @@
       "email": "michael.ciniawsky@gmail.com"
     }
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/posthtml/gulp-posthtml.git"
-  },
-  "bugs": {
-    "url": "https://github.com/posthtml/gulp-posthtml/issues"
-  },
+  "repository": "https://github.com/posthtml/gulp-posthtml.git",
+  "bugs": "https://github.com/posthtml/gulp-posthtml/issues",
   "homepage": "https://github.com/posthtml/gulp-posthtml#readme",
   "license": "MIT"
 }
