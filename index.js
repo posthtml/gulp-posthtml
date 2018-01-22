@@ -13,7 +13,7 @@ const PLUGIN_NAME = 'gulp-posthtml'
 const posthtml = require('posthtml')
 const posthtmlrc = require('posthtml-load-config')
 
-const Error = require('gulp-util').PluginError
+const Error = require('plugin-error')
 
 function rc (cb) {
   return function (plugins, options) {
@@ -48,7 +48,7 @@ function rc (cb) {
  * @module gulp-posthtml
  * @version 3.0.0
  *
- * @requires gulp-util
+ * @requires plugin-error
  * @requires through2
  * @requires posthtml
  * @requires posthtml-load-config
