@@ -7,9 +7,9 @@
 [![chat][chat]][chat-url]
 
 <div align="center">
-  <img width="100" height="200"     src="https://worldvectorlogo.com/logos/gulp.svg">
+  <img width="100" height="200" src="https://worldvectorlogo.com/logos/gulp.svg">
   <a href="https://github.com/posthtml/posthtml">
-    <img width="220" height="200" title="PosHTML"           src="http://posthtml.github.io/posthtml/logo.svg">
+    <img width="220" height="200" title="PosHTML" src="http://posthtml.github.io/posthtml/logo.svg">
   </a>
   <h1>Gulp PostHTML</h1>
 </div>
@@ -36,13 +36,13 @@ task('html', () => {
 
 <h2 align="center">Options</h2>
 
-### Plugins
+### `Plugins`
 
 |Name|Type|Default|Description|
 |:--:|:--:|:-----:|:----------|
 |`plugins`|`{Array}`|`[]`|PostHTML Plugins|
 
-### Options
+### `Options`
 
 |Name|Type|Default|Description|
 |:--:|:--:|:-----:|:----------|
@@ -70,7 +70,7 @@ task('html', () => {
 })
 ```
 
-### Config
+### `Config`
 
 |Name|Type|Default|Description|
 |:--:|:--:|:-----:|:----------|
@@ -85,7 +85,7 @@ import rename from 'gulp-rename'
 import posthtml from 'gulp-posthtml'
 
 
-task('sml', () => {
+task('ssml', () => {
   const config = (file) => ({
     plugins: [ require('posthtml-include')({ root: file.dirname }) ],
     options: { parser: require('posthtml-sugarml')() }
@@ -100,7 +100,7 @@ task('sml', () => {
 
 ### [`posthtml.config.js`](https://github.com/posthtml/posthtml-load-config)
 
-#### Context
+#### `Context`
 
 |Name|Type|Default|Description|
 |:--:|:--:|:-----:|:----------|
@@ -128,7 +128,7 @@ import rename from 'gulp-rename'
 import posthtml from 'gulp-posthtml'
 
 
-task('sml', () => {
+task('ssml', () => {
   const ctx = { locals: { a: 'Hello World!'} }
 
   return src('src/*.sml')
@@ -144,7 +144,7 @@ task('sml', () => {
   <tbody>
    <tr>
     <td align="center">
-      <img width="150 height="150"
+      <img width="150" height="150"
       src="https://avatars.githubusercontent.com/u/1510217?v=3&s=150">
       <br />
       <a href="https://github.com/voischev">Ivan Voischev</a>
@@ -159,7 +159,7 @@ task('sml', () => {
   <tbody>
    <tr>
     <td align="center">
-      <img width="150 height="150"
+      <img width="150" height="150"
       src="https://avatars.githubusercontent.com/u/5419992?v=3&s=150">
       <br />
       <a href="https://github.com/michael-ciniawsky">Michael Ciniawsky</a>
