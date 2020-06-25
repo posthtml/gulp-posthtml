@@ -13,7 +13,7 @@ const PLUGIN_NAME = 'gulp-posthtml'
 const posthtml = require('posthtml')
 const posthtmlrc = require('posthtml-load-config')
 
-const Error = require('plugin-error')
+const PluginError = require('plugin-error')
 
 function rc (cb) {
   return function (plugins, options) {
@@ -67,7 +67,12 @@ module.exports = rc((loadConfig) => {
     }
 
     if (file.isStream()) {
-      return new Error(`Streams are not supported by ${PLUGIN_NAME}`)
+      return cb(
+        new PluginError({
+          plugin: PLUGIN_NAME,
+          message: 'Streams are not supported'
+        })
+      )
     }
 
     loadConfig(file).then((config) => {
@@ -82,7 +87,17 @@ module.exports = rc((loadConfig) => {
           cb(null, file)
         })
         .catch((err) => {
-          cb(new Error(PLUGIN_NAME, err))
+          // passing the error object directly would usually be fine,
+          // but plugins like posthtml-expressions are an exception, so we're being safe
+          // https://github.com/posthtml/posthtml-expressions/issues/89
+          cb(
+            new PluginError({
+              plugin: PLUGIN_NAME,
+              message: err.message,
+              stack: err.stack,
+              showStack: true
+            })
+          )
         })
     })
   })
