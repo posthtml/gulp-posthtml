@@ -18,13 +18,13 @@ const PluginError = require('plugin-error')
 function rc (cb) {
   return function (plugins, options) {
     if (Array.isArray(plugins)) {
-      return cb(() => Promise.resolve({ plugins: plugins, options: options }))
+      return cb(() => Promise.resolve({ plugins: plugins, options: options })) // eslint-disable-line standard/no-callback-literal
     } else if (typeof plugins === 'function') {
-      return cb((file) => Promise.resolve(plugins(file)))
+      return cb((file) => Promise.resolve(plugins(file))) // eslint-disable-line standard/no-callback-literal
     } else {
       const ctx = plugins || {}
 
-      return cb((file) => {
+      return cb((file) => { // eslint-disable-line standard/no-callback-literal
         const config = {}
 
         if (ctx.config) {
@@ -83,7 +83,7 @@ module.exports = rc((loadConfig) => {
       return posthtml(config.plugins)
         .process(file.contents.toString(enc), config.options)
         .then((result) => {
-          file.contents = new Buffer(result.html)
+          file.contents = Buffer.from(result.html)
           cb(null, file)
         })
         .catch((err) => {
