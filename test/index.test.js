@@ -2,7 +2,7 @@
 // #GULP - POSTHTML - TEST - INDEX
 // ------------------------------------
 
-const test = require('ava');
+const test = require('ava')
 const fs = require('fs')
 const path = require('path')
 const File = require('vinyl')
@@ -10,7 +10,7 @@ const File = require('vinyl')
 const fixture = (file) => {
   return new File({
     path: path.resolve('test/fixtures', file),
-    contents: new Buffer(
+    contents: Buffer.from(
       fs.readFileSync(path.resolve('test/fixtures', file), 'utf8')
     )
   })
@@ -31,7 +31,7 @@ test.cb('File', t => {
   plugin.write(html)
 
   plugin.on('data', (html) => {
-    t.true(html.isBuffer());
+    t.true(html.isBuffer())
     t.is(html.contents.toString('utf8'), expected('index.html'))
     t.end()
   })
@@ -50,14 +50,14 @@ test.cb('Plugins', t => {
   plugin.write(html)
 
   plugin.on('data', (html) => {
-    t.true(html.isBuffer());
+    t.true(html.isBuffer())
     t.is(html.contents.toString('utf8'), expected('html-result.html'))
     t.end()
   })
 })
 
 test.cb('Options', t => {
-  t.plan(2);
+  t.plan(2)
   const html = fixture('index.sml')
 
   const cb = (file) => ({
@@ -72,14 +72,14 @@ test.cb('Options', t => {
   plugin.write(html)
 
   plugin.on('data', (html) => {
-    t.true(html.isBuffer());
+    t.true(html.isBuffer())
     t.is(html.contents.toString('utf8'), expected('sugar-result.html'))
     t.end()
   })
 })
 
 test.cb('Function', t => {
-  t.plan(2);
+  t.plan(2)
   const html = fixture('index.sml')
 
   const cb = (file) => ({
@@ -94,7 +94,7 @@ test.cb('Function', t => {
   plugin.write(html)
 
   plugin.on('data', (html) => {
-    t.true(html.isBuffer());
+    t.true(html.isBuffer())
     t.is(html.contents.toString('utf8'), expected('sugar-result.html'))
     t.end()
   })
@@ -111,7 +111,7 @@ test.cb('Config', t => {
   plugin.write(html)
 
   plugin.on('data', (html) => {
-    t.true(html.isBuffer());
+    t.true(html.isBuffer())
     t.is(html.contents.toString('utf8'), expected('sugar-result.html'))
     t.end()
   })
