@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "plugin-error": "^1.0.1",
-    "posthtml": "^0.11.2",
+    "posthtml": "^0.11.6",
     "posthtml-load-config": "^1.0.0",
     "through2": "^3.0.2"
   },
