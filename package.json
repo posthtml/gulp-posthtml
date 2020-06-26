@@ -14,20 +14,20 @@
     "release": "standard-version"
   },
   "dependencies": {
-    "plugin-error": "^1.0.0",
-    "posthtml": "^0.11.0",
+    "plugin-error": "^1.0.1",
+    "posthtml": "^0.11.2",
     "posthtml-load-config": "^1.0.0",
-    "through2": "^2.0.0"
+    "through2": "^3.0.2"
   },
   "devDependencies": {
-    "ava": "^0.24.0",
-    "jsdoc-to-markdown": "^4.0.0",
-    "nyc": "^11.0.0",
-    "posthtml-include": "^1.1.0",
+    "ava": "^3.9.0",
+    "jsdoc-to-markdown": "^6.0.1",
+    "nyc": "^15.1.0",
+    "posthtml-include": "^1.4.3",
     "posthtml-sugarml": "^1.0.0-alpha3",
-    "standard": "^10.0.0",
-    "standard-version": "^4.0.0",
-    "vinyl": "^2.0.0"
+    "standard": "^14.3.4",
+    "standard-version": "^8.0.0",
+    "vinyl": "^2.2.0"
   },
   "keywords": [
     "html",
