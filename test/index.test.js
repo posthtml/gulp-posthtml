@@ -1,118 +1,120 @@
-// ------------------------------------
-// #GULP - POSTHTML - TEST - INDEX
-// ------------------------------------
+'use strict'
 
-const test = require('ava')
-const fs = require('fs')
-const path = require('path')
+const { test } = require('node:test')
+const assert = require('node:assert/strict')
+const fs = require('node:fs')
+const path = require('node:path')
+const { PassThrough } = require('node:stream')
 const File = require('vinyl')
-
-const fixture = (file) => {
-  return new File({
-    path: path.resolve('test/fixtures', file),
-    contents: Buffer.from(
-      fs.readFileSync(path.resolve('test/fixtures', file), 'utf8')
-    )
-  })
-}
-
-const expected = (file) => {
-  return fs.readFileSync(path.resolve('test/expect', file), 'utf8')
-}
 
 const posthtml = require('..')
 
-test.cb('File', t => {
-  t.plan(2)
-  const html = fixture('index.html')
+const fixtures = path.resolve(__dirname, 'fixtures')
+const components = path.join(fixtures, 'components')
 
-  const plugin = posthtml([])
+const fixture = (name, contents) => new File({
+  cwd: fixtures,
+  base: fixtures,
+  path: path.join(fixtures, name),
+  contents: contents === undefined ? fs.readFileSync(path.join(fixtures, name)) : contents
+})
 
-  plugin.write(html)
+const expected = (name) => fs.readFileSync(path.resolve(__dirname, 'expect', name), 'utf8')
 
-  plugin.on('data', (html) => {
-    t.true(html.isBuffer())
-    t.is(html.contents.toString('utf8'), expected('index.html'))
-    t.end()
+function run (stream, file) {
+  return new Promise((resolve, reject) => {
+    stream.once('data', resolve)
+    stream.once('error', reject)
+    stream.end(file)
+  })
+}
+
+test('passes HTML through without plugins', async () => {
+  const file = await run(posthtml([]), fixture('index.html'))
+
+  assert.ok(file.isBuffer())
+  assert.equal(file.contents.toString(), expected('index.html'))
+})
+
+test('applies an array of plugins', async () => {
+  const include = require('posthtml-include')({ root: components })
+  const file = await run(posthtml([include]), fixture('index.html'))
+
+  assert.equal(file.contents.toString(), expected('html-result.html'))
+})
+
+test('passes options and sets from/to to the file path', async () => {
+  let treeOptions
+  const plugin = (tree) => { treeOptions = tree.options }
+  const file = await run(
+    posthtml([plugin], { closingSingleTag: 'slash' }),
+    fixture('img.html', Buffer.from('<img src="a.png">'))
+  )
+
+  assert.equal(file.contents.toString(), '<img src="a.png" />')
+  assert.equal(treeOptions.from, file.path)
+  assert.equal(treeOptions.to, file.path)
+})
+
+test('loads posthtml.config.js next to the file with the given context', async () => {
+  const stream = posthtml({ include: { root: components } })
+  const file = await run(stream, fixture('index.html'))
+
+  assert.equal(file.contents.toString(), expected('html-result.html'))
+})
+
+test('loads posthtml.config.js from the config option', async () => {
+  const stream = posthtml({ config: fixtures, include: { root: components } })
+  const file = await run(stream, new File({
+    path: path.resolve('elsewhere/index.html'),
+    contents: fs.readFileSync(path.join(fixtures, 'index.html'))
+  }))
+
+  assert.equal(file.contents.toString(), expected('html-result.html'))
+})
+
+test('passes null files through', async () => {
+  const file = await run(posthtml([]), new File({ path: path.join(fixtures, 'empty.html') }))
+
+  assert.ok(file.isNull())
+})
+
+test('rejects streaming files', async () => {
+  const file = new File({ path: path.join(fixtures, 'index.html'), contents: new PassThrough() })
+
+  await assert.rejects(run(posthtml([]), file), {
+    plugin: 'gulp-posthtml',
+    message: 'Streams are not supported'
   })
 })
 
-test.cb('Plugins', t => {
-  t.plan(2)
-  const html = fixture('index.html')
+test('emits plugin errors instead of hanging', async () => {
+  const plugin = () => { throw new Error('plugin failed') }
 
-  const plugins = [
-    require('posthtml-include')({ root: './test/fixtures/components' })
-  ]
-
-  const plugin = posthtml(plugins)
-
-  plugin.write(html)
-
-  plugin.on('data', (html) => {
-    t.true(html.isBuffer())
-    t.is(html.contents.toString('utf8'), expected('html-result.html'))
-    t.end()
+  await assert.rejects(run(posthtml([plugin]), fixture('index.html')), {
+    plugin: 'gulp-posthtml',
+    message: 'plugin failed'
   })
 })
 
-test.cb('Options', t => {
-  t.plan(2)
-  const html = fixture('index.sml')
+test('emits errors from the config function', async () => {
+  const stream = posthtml(() => { throw new Error('config failed') })
 
-  const cb = (file) => ({
-    plugins: [
-      require('posthtml-include')({ root: `${file.dirname}/components` })
-    ],
-    options: { parser: require('posthtml-sugarml')() }
-  })
-
-  const plugin = posthtml(cb)
-
-  plugin.write(html)
-
-  plugin.on('data', (html) => {
-    t.true(html.isBuffer())
-    t.is(html.contents.toString('utf8'), expected('sugar-result.html'))
-    t.end()
+  await assert.rejects(run(stream, fixture('index.html')), {
+    plugin: 'gulp-posthtml',
+    message: 'config failed'
   })
 })
 
-test.cb('Function', t => {
-  t.plan(2)
-  const html = fixture('index.sml')
-
-  const cb = (file) => ({
-    plugins: [
-      require('posthtml-include')({ root: `${file.dirname}/components` })
-    ],
-    options: { parser: require('posthtml-sugarml')() }
+test('emits an error when posthtml.config.js cannot be loaded', async (t) => {
+  t.mock.method(console, 'log', () => {})
+  const file = new File({
+    path: path.join(fixtures, 'broken-config/index.html'),
+    contents: Buffer.from('<p></p>')
   })
 
-  const plugin = posthtml(cb)
-
-  plugin.write(html)
-
-  plugin.on('data', (html) => {
-    t.true(html.isBuffer())
-    t.is(html.contents.toString('utf8'), expected('sugar-result.html'))
-    t.end()
-  })
-})
-
-test.cb('Config', t => {
-  t.plan(2)
-  const html = fixture('index.sml')
-
-  const ctx = { include: { root: './test/fixtures/components' } }
-
-  const plugin = posthtml(ctx)
-
-  plugin.write(html)
-
-  plugin.on('data', (html) => {
-    t.true(html.isBuffer())
-    t.is(html.contents.toString('utf8'), expected('sugar-result.html'))
-    t.end()
+  await assert.rejects(run(posthtml(), file), {
+    plugin: 'gulp-posthtml',
+    message: /PostHTML config could not be loaded/
   })
 })

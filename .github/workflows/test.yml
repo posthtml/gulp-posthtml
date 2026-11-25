@@ -1,0 +1,40 @@
+name: Test
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Node ${{ matrix.node }}, posthtml ${{ matrix.posthtml }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20.19.0, 22.12.0, 22, 24, 26]
+        posthtml: ['0.16']
+        include:
+          - node: 24
+            posthtml: '0.16.0'
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Set Node.js version
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Install posthtml ${{ matrix.posthtml }}
+        run: npm install --no-save posthtml@${{ matrix.posthtml }}
+
+      - name: Run checks
+        run: npm run check
