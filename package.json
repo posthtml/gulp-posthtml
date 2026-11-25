@@ -3,32 +3,32 @@
   "version": "3.0.5",
   "description": "Gulp PostHTML Plugin",
   "main": "index.js",
+  "files": [
+    "index.js"
+  ],
   "engines": {
-    "node": ">=4"
+    "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "lint": "standard --verbose | snazzy",
-    "test": "nyc ava",
-    "docs": "jsdoc2md index.js > PLUGIN.md",
-    "start": "npm run lint && npm test",
-    "release": "standard-version"
+    "lint": "eslint .",
+    "test": "c8 node --test",
+    "check": "npm run lint && npm test"
+  },
+  "peerDependencies": {
+    "posthtml": "^0.16.0 || ^0.17.0"
   },
   "dependencies": {
-    "plugin-error": "^1.0.1",
-    "posthtml": "^0.11.6",
-    "posthtml-load-config": "^1.0.0",
-    "through2": "^3.0.2"
+    "plugin-error": "^2.0.1",
+    "posthtml-load-config": "^2.0.0"
   },
   "devDependencies": {
-    "ava": "^3.9.0",
-    "jsdoc-to-markdown": "^6.0.1",
-    "nyc": "^15.1.0",
-    "posthtml-include": "^1.4.3",
-    "posthtml-sugarml": "^1.0.0-alpha3",
-    "snazzy": "^8.0.0",
-    "standard": "^14.3.4",
-    "standard-version": "^8.0.0",
-    "vinyl": "^2.2.0"
+    "@eslint/js": "^10.0.1",
+    "c8": "^12.0.0",
+    "eslint": "^10.15.0",
+    "globals": "^17.14.0",
+    "posthtml": "^0.16.7",
+    "posthtml-include": "^2.0.1",
+    "vinyl": "^3.0.1"
   },
   "keywords": [
     "html",

@@ -1,104 +1,81 @@
-// ------------------------------------
-// #GULP - POSTHTML - INDEX
-// ------------------------------------
-
 'use strict'
 
-const path = require('path')
+const path = require('node:path')
+const { Transform } = require('node:stream')
 
-const transform = require('through2').obj
+const posthtml = require('posthtml')
+const loadConfig = require('posthtml-load-config')
+const PluginError = require('plugin-error')
 
 const PLUGIN_NAME = 'gulp-posthtml'
 
-const posthtml = require('posthtml')
-const posthtmlrc = require('posthtml-load-config')
+/**
+ * Creates a function that resolves `{ plugins, options }` for a file.
+ *
+ * @param {Array|Function|Object} [plugins] PostHTML plugins, a function `(file) => config`, or a config context
+ * @param {Object} [options] PostHTML options, used with an array of plugins
+ * @return {Function} `(file) => Promise<{ plugins, options }>`
+ */
+function configLoader (plugins, options) {
+  if (Array.isArray(plugins)) {
+    return async () => ({ plugins, options })
+  }
 
-const PluginError = require('plugin-error')
+  if (typeof plugins === 'function') {
+    return async (file) => plugins(file)
+  }
 
-function rc (cb) {
-  return function (plugins, options) {
-    if (Array.isArray(plugins)) {
-      return cb(() => Promise.resolve({ plugins: plugins, options: options })) // eslint-disable-line standard/no-callback-literal
-    } else if (typeof plugins === 'function') {
-      return cb((file) => Promise.resolve(plugins(file))) // eslint-disable-line standard/no-callback-literal
-    } else {
-      const ctx = plugins || {}
+  const ctx = plugins || {}
 
-      return cb((file) => { // eslint-disable-line standard/no-callback-literal
-        const config = {}
+  return async (file) => {
+    const configPath = ctx.config ? path.resolve(ctx.config) : file.dirname
+    const config = await loadConfig({ file, options: ctx }, configPath)
 
-        if (ctx.config) {
-          config.path = path.resolve(ctx.config)
-        } else {
-          config.path = file.dirname
-        }
-
-        config.ctx = { file: file, options: ctx }
-
-        return posthtmlrc(config.ctx, config.path)
-      })
+    if (!config) {
+      throw new Error(`PostHTML config could not be loaded from ${configPath}`)
     }
+
+    return config
   }
 }
+
 /**
- * @author Ivan Voishev (@voishev) <voischev.ivan@ya.ru>
- * @description PostHTML Plugin for Gulp
- * @license MIT
+ * PostHTML plugin for Gulp.
  *
  * @module gulp-posthtml
- * @version 3.0.0
  *
- * @requires plugin-error
- * @requires through2
- * @requires posthtml
- * @requires posthtml-load-config
- *
- * @method gulp-posthtml
- *
- * @param  {Array}  plugins PostHTML Plugins
- * @param  {Object} options PostHTML Options
- *
- * @return {Function}       Stream (Transform)
+ * @param {Array|Function|Object} [plugins] PostHTML plugins, a function `(file) => ({ plugins, options })`,
+ *   or a context for `posthtml.config.js` (`{ config: 'path/to/config/dir', ...ctx }`)
+ * @param {Object} [options] PostHTML options, used with an array of plugins
+ * @return {Transform} Object mode stream of Vinyl files
  */
-module.exports = rc((loadConfig) => {
-  return transform((file, enc, cb) => {
-    if (file.isNull()) {
-      return cb(null, file)
-    }
+module.exports = function gulpPosthtml (plugins, options) {
+  const load = configLoader(plugins, options)
 
-    if (file.isStream()) {
-      return cb(
-        new PluginError({
-          plugin: PLUGIN_NAME,
-          message: 'Streams are not supported'
-        })
-      )
-    }
+  return new Transform({
+    objectMode: true,
+    transform (file, encoding, callback) {
+      if (file.isNull()) {
+        callback(null, file)
+        return
+      }
 
-    loadConfig(file).then((config) => {
-      config.options = Object.assign(
-        { from: file.path, to: file.path }, config.options
-      )
+      if (file.isStream()) {
+        callback(new PluginError(PLUGIN_NAME, 'Streams are not supported'))
+        return
+      }
 
-      return posthtml(config.plugins)
-        .process(file.contents.toString(enc), config.options)
+      load(file)
+        .then((config) => posthtml(config.plugins).process(
+          file.contents.toString(),
+          { from: file.path, to: file.path, ...config.options }
+        ))
         .then((result) => {
           file.contents = Buffer.from(result.html)
-          cb(null, file)
+          callback(null, file)
+        }, (error) => {
+          callback(new PluginError(PLUGIN_NAME, error, { showStack: true }))
         })
-        .catch((err) => {
-          // passing the error object directly would usually be fine,
-          // but plugins like posthtml-expressions are an exception, so we're being safe
-          // https://github.com/posthtml/posthtml-expressions/issues/89
-          cb(
-            new PluginError({
-              plugin: PLUGIN_NAME,
-              message: err.message,
-              stack: err.stack,
-              showStack: true
-            })
-          )
-        })
-    })
+    }
   })
-})
+}

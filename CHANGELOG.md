@@ -1,6 +1,24 @@
 # Change Log
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file.
+
+## Unreleased (4.0.0)
+
+### Breaking Changes
+
+* `posthtml` is now a peer dependency (`^0.16.0 || ^0.17.0`): install it next to `gulp-posthtml`. The previous release bundled `posthtml@^0.11`.
+* Require Node.js `^20.19.0 || >=22.12.0`.
+* `posthtml-load-config` 2: `posthtml.config.js` support follows its current format.
+
+### Bug Fixes
+
+* Emit errors from config loading and from the config function as `PluginError` instead of leaving the stream hanging ([#18](https://github.com/posthtml/gulp-posthtml/issues/18)).
+
+### Development
+
+* Replace `through2` with Node.js `stream.Transform`; update `plugin-error` to 2.
+* Replace ava, nyc and standard with `node:test`, c8 and ESLint; drop the `posthtml-sugarml` test fixtures.
+* Replace Travis CI with GitHub Actions.
 
 <a name="3.0.4"></a>
 ## [3.0.4](https://github.com/posthtml/gulp-posthtml/compare/v3.0.3...v3.0.4) (2018-01-22)
